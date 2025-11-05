@@ -8,10 +8,10 @@
   "ServerPort": 8000,
   "PortForwards": [
     {
-      "Name": "测试连接",
-      "LocalPort": 9999,
+      "Name": "SQL隧道",
+      "LocalPort": 1430,
       "TargetPeerID": "服务提供端",
-      "TargetPort": 9999,
+      "TargetPort": 1433,
       "Protocol": "TCP"
     }
   ],

@@ -63,6 +63,15 @@ namespace P2PPuncher
         private CancellationTokenSource keepAliveCts = null;
         private Task keepAliveTask = null;
         
+        // 端口转发映射（ConnectionID -> TCP连接）
+        private Dictionary<string, TcpClient> forwardConnections = new Dictionary<string, TcpClient>();
+        private Dictionary<string, Task> forwardReadTasks = new Dictionary<string, Task>();
+        private Dictionary<string, IPEndPoint> forwardRemoteEPs = new Dictionary<string, IPEndPoint>();
+        private object forwardLock = new object();
+        
+        // 端口转发响应事件
+        public event Action<string> OnForwardResponse;
+        
         public UdpPuncher(string peerID, string groupID, string groupKey, string[] serverIPs, int serverPort, Logger logger)
         {
             myPeerID = peerID;
@@ -863,6 +872,20 @@ namespace P2PPuncher
                         continue;
                     }
                     
+                    // 处理端口转发消息（服务端接收）
+                    if (message.StartsWith("FORWARD:"))
+                    {
+                        _ = Task.Run(() => HandleForwardMessageAsync(message, result.RemoteEndPoint));
+                        continue;
+                    }
+                    
+                    // 处理端口转发响应（客户端接收）
+                    if (message.StartsWith("FORWARD_RESPONSE:"))
+                    {
+                        OnForwardResponse?.Invoke(message);
+                        continue;
+                    }
+                    
                     // 处理中转消息
                     if (message.StartsWith("RELAYED:"))
                     {
@@ -915,10 +938,147 @@ namespace P2PPuncher
             return false;
         }
 
+        // ========== 处理端口转发消息 ==========
+        private async Task HandleForwardMessageAsync(string message, IPEndPoint remoteEndPoint)
+        {
+            try
+            {
+                // 格式: FORWARD:ConnectionID:RequestID:TargetPort:Base64Data
+                var parts = message.Split(new[] { ':' }, 5);
+                if (parts.Length < 5) return;
+                
+                string connectionId = parts[1];
+                string requestId = parts[2];
+                int targetPort = int.Parse(parts[3]);
+                byte[] data = Convert.FromBase64String(parts[4]);
+                
+                logger.Debug($"📨 收到转发数据: 连接{connectionId}, 目标端口 {targetPort}, 数据长度 {data.Length} 字节");
+                
+                // 获取或创建TCP连接
+                TcpClient tcpClient = null;
+                NetworkStream stream = null;
+                bool isNewConnection = false;
+                
+                try
+                {
+                    lock (forwardLock)
+                    {
+                        if (!forwardConnections.TryGetValue(connectionId, out tcpClient) || !tcpClient.Connected)
+                        {
+                            // 创建新连接
+                            tcpClient = new TcpClient();
+                            forwardConnections[connectionId] = tcpClient;
+                            forwardRemoteEPs[connectionId] = remoteEndPoint;
+                            isNewConnection = true;
+                            logger.Info($"🔌 创建新TCP连接: {connectionId} → 127.0.0.1:{targetPort}");
+                        }
+                    }
+                    
+                    // 确保已连接
+                    if (!tcpClient.Connected)
+                    {
+                        await tcpClient.ConnectAsync("127.0.0.1", targetPort);
+                        logger.Debug($"✅ TCP连接已建立: {connectionId}");
+                        
+                        // 启动后台读取任务
+                        stream = tcpClient.GetStream();
+                        var readTask = StartBackgroundReadTask(connectionId, stream, remoteEndPoint);
+                        lock (forwardLock)
+                        {
+                            forwardReadTasks[connectionId] = readTask;
+                        }
+                        logger.Debug($"🔄 已启动后台读取任务: {connectionId}");
+                    }
+                    else
+                    {
+                        stream = tcpClient.GetStream();
+                    }
+                    
+                    // 发送数据到本地端口（不等待响应，后台任务会处理）
+                    await stream.WriteAsync(data, 0, data.Length);
+                    logger.Debug($"✅ 数据已转发到本地端口 {targetPort} (连接{connectionId})");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error($"❌ 转发失败: {ex.Message}");
+                    
+                    // 出错时清理连接
+                    CleanupConnection(connectionId);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"❌ 处理转发消息失败: {ex.Message}");
+            }
+        }
+        
+        // ========== 后台读取任务 ==========
+        private async Task StartBackgroundReadTask(string connectionId, NetworkStream stream, IPEndPoint remoteEndPoint)
+        {
+            byte[] buffer = new byte[8192];
+            try
+            {
+                while (isRunning)
+                {
+                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0)
+                    {
+                        // 连接关闭
+                        logger.Debug($"🔌 SQL Server关闭了连接: {connectionId}");
+                        break;
+                    }
+                    
+                    // 使用ConnectionID作为标识发送响应
+                    string responseData = Convert.ToBase64String(buffer, 0, bytesRead);
+                    string responseMsg = $"FORWARD_RESPONSE:{connectionId}:{responseData}";
+                    byte[] responseBytes = Encoding.UTF8.GetBytes(responseMsg);
+                    await udpClient.SendAsync(responseBytes, responseBytes.Length, remoteEndPoint);
+                    logger.Debug($"📤 [后台] 已发回响应: {bytesRead} 字节 (连接{connectionId})");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"❌ [后台读取] 连接 {connectionId} 异常: {ex.Message}");
+            }
+            finally
+            {
+                CleanupConnection(connectionId);
+            }
+        }
+        
+        // ========== 清理连接 ==========
+        private void CleanupConnection(string connectionId)
+        {
+            lock (forwardLock)
+            {
+                if (forwardConnections.ContainsKey(connectionId))
+                {
+                    forwardConnections[connectionId]?.Close();
+                    forwardConnections.Remove(connectionId);
+                }
+                forwardReadTasks.Remove(connectionId);
+                forwardRemoteEPs.Remove(connectionId);
+                logger.Debug($"🗑️ 已清理连接: {connectionId}");
+            }
+        }
+        
         // ========== 停止 ==========
         public void Stop()
         {
             isRunning = false;
+            
+            // 清理所有连接
+            lock (forwardLock)
+            {
+                foreach (var conn in forwardConnections.Values)
+                {
+                    conn?.Close();
+                }
+                forwardConnections.Clear();
+                forwardReadTasks.Clear();
+                forwardRemoteEPs.Clear();
+            }
+            
             udpClient?.Close();
         }
     }

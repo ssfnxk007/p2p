@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("P2PClient")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a19a79648ee4bd483a3ea49c138233c24a782ac6")]
 [assembly: System.Reflection.AssemblyProductAttribute("P2PClient")]
 [assembly: System.Reflection.AssemblyTitleAttribute("P2PClient")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
