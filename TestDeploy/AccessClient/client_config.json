@@ -1,0 +1,29 @@
+{
+  "PeerID": "访问客户端",
+  "GroupID": "测试组1",
+  "GroupKey": "test123",
+  "Servers": [
+    "42.51.41.138"
+  ],
+  "ServerPort": 8000,
+  "PortForwards": [
+    {
+      "Name": "测试连接",
+      "LocalPort": 9999,
+      "TargetPeerID": "服务提供端",
+      "TargetPort": 9999,
+      "Protocol": "TCP"
+    }
+  ],
+  "Logging": {
+    "Level": "DEBUG",
+    "LogToFile": true,
+    "LogFilePath": "logs/访问客户端_DEBUG_{date}.log"
+  },
+  "Advanced": {
+    "HeartbeatInterval": 1000,
+    "PunchRetryCount": 10,
+    "EnableP2P": true,
+    "EnableRelay": true
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "ServerPort": 8000,
+  "MaxClients": 1000,
+  "Groups": [
+    {
+      "GroupID": "测试组1",
+      "GroupKey": "test123",
+      "Description": "测试用组"
+    }
+  ],
+  "Logging": {
+    "Level": "DEBUG",
+    "LogToFile": true,
+    "LogFilePath": "logs/server_DEBUG_{date}.log"
+  },
+  "Advanced": {
+    "ClientTimeout": 30,
+    "CleanupInterval": 10,
+    "EnablePortForward": true
+  }
+}

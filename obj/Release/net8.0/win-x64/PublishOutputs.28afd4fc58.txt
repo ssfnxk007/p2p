@@ -1,0 +1,2 @@
+D:\Ksa_p2p直联\ServerDeploy_Standalone\P2PServer.pdb
+D:\Ksa_p2p直联\ServerDeploy_Standalone\P2PServer.exe

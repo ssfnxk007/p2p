@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>P2PServer</RootNamespace>
+    <AssemblyName>P2PServer</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <StartupObject>P2PServer.P2PServerMain</StartupObject>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="P2PServerMain.cs" />
+    <Compile Include="P2PServer.cs" />
+    <Compile Include="P2PConfig.cs" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,21 @@
+{
+  "ServerPort": 8000,
+  "MaxClients": 1000,
+  "Groups": [
+    {
+      "GroupID": "default",
+      "GroupKey": "change_me",
+      "Description": "\u9ED8\u8BA4\u7EC4"
+    }
+  ],
+  "Logging": {
+    "Level": "INFO",
+    "LogToFile": true,
+    "LogFilePath": "logs/p2p_{date}.log"
+  },
+  "Advanced": {
+    "ClientTimeout": 30,
+    "CleanupInterval": 10,
+    "EnablePortForward": true
+  }
+}

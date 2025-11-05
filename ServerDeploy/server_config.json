@@ -1,0 +1,21 @@
+{
+  "ServerPort": 8000,
+  "MaxClients": 1000,
+  "Groups": [
+    {
+      "GroupID": "测试SQL1",
+      "GroupKey": "text123",
+      "Description": "张三"
+    }
+  ],
+  "Logging": {
+    "Level": "INFO",
+    "LogToFile": true,
+    "LogFilePath": "logs/server_{date}.log"
+  },
+  "Advanced": {
+    "ClientTimeout": 30,
+    "CleanupInterval": 10,
+    "EnablePortForward": true
+  }
+}

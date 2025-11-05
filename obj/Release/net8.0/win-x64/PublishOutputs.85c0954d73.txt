@@ -1,0 +1,5 @@
+D:\Ksa_p2p直联\TestDeploy\Server\P2PServer.exe
+D:\Ksa_p2p直联\TestDeploy\Server\P2PServer.dll
+D:\Ksa_p2p直联\TestDeploy\Server\P2PServer.deps.json
+D:\Ksa_p2p直联\TestDeploy\Server\P2PServer.runtimeconfig.json
+D:\Ksa_p2p直联\TestDeploy\Server\P2PServer.pdb

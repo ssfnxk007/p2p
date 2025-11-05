@@ -1,0 +1,21 @@
+{
+  "PeerID": "Client1",
+  "GroupID": "default",
+  "GroupKey": "change_me",
+  "Servers": [
+    "127.0.0.1"
+  ],
+  "ServerPort": 8000,
+  "PortForwards": [],
+  "Logging": {
+    "Level": "INFO",
+    "LogToFile": true,
+    "LogFilePath": "logs/p2p_{date}.log"
+  },
+  "Advanced": {
+    "HeartbeatInterval": 1000,
+    "PunchRetryCount": 10,
+    "EnableP2P": true,
+    "EnableRelay": true
+  }
+}

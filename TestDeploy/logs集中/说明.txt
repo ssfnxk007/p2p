@@ -1,0 +1,28 @@
+========================================
+         统一日志查看目录
+========================================
+
+所有日志文件都会保存到各自的 logs 目录：
+
+服务器日志：
+  TestDeploy\Server\logs\server_DEBUG_yyyyMMdd.log
+
+服务提供端日志：
+  TestDeploy\ServiceProvider\logs\服务提供端_DEBUG_yyyyMMdd.log
+
+访问客户端日志：
+  TestDeploy\AccessClient\logs\访问客户端_DEBUG_yyyyMMdd.log
+
+========================================
+快速查看所有日志：
+========================================
+
+1. 使用文本编辑器分别打开三个日志文件
+
+2. 使用 PowerShell 实时查看：
+   Get-Content .\TestDeploy\Server\logs\*.log -Tail 50 -Wait
+
+3. 使用记事本打开特定日志：
+   notepad TestDeploy\AccessClient\logs\访问客户端_DEBUG_*.log
+
+========================================

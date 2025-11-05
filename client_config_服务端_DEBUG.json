@@ -1,0 +1,21 @@
+{
+  "PeerID": "服务提供端",
+  "GroupID": "测试组1",
+  "GroupKey": "test123",
+  "Servers": [
+    "42.51.41.138"
+  ],
+  "ServerPort": 8000,
+  "PortForwards": [],
+  "Logging": {
+    "Level": "DEBUG",
+    "LogToFile": true,
+    "LogFilePath": "logs/服务提供端_DEBUG_{date}.log"
+  },
+  "Advanced": {
+    "HeartbeatInterval": 1000,
+    "PunchRetryCount": 10,
+    "EnableP2P": true,
+    "EnableRelay": true
+  }
+}

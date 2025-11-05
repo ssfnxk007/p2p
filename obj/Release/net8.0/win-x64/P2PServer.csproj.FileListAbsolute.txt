@@ -1,0 +1,14 @@
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\P2PServer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\P2PServer.AssemblyInfoInputs.cache
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\P2PServer.AssemblyInfo.cs
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\P2PServer.csproj.CoreCompileInputs.cache
+D:\Ksa_p2p直联\bin\Release\net8.0\win-x64\P2PServer.exe
+D:\Ksa_p2p直联\bin\Release\net8.0\win-x64\P2PServer.deps.json
+D:\Ksa_p2p直联\bin\Release\net8.0\win-x64\P2PServer.runtimeconfig.json
+D:\Ksa_p2p直联\bin\Release\net8.0\win-x64\P2PServer.dll
+D:\Ksa_p2p直联\bin\Release\net8.0\win-x64\P2PServer.pdb
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\P2PServer.dll
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\refint\P2PServer.dll
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\P2PServer.pdb
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\P2PServer.genruntimeconfig.cache
+D:\Ksa_p2p直联\obj\Release\net8.0\win-x64\ref\P2PServer.dll

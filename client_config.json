@@ -1,0 +1,41 @@
+{
+  "PeerID": "ClientA",
+  "GroupID": "group_sql",
+  "GroupKey": "your_secret_key_12345",
+  
+  "Servers": [
+    "42.81.169.31",
+    "42.81.169.35"
+  ],
+  "ServerPort": 8000,
+  
+  "PortForwards": [
+    {
+      "Name": "SQL Server",
+      "LocalPort": 1433,
+      "TargetPeerID": "ClientB",
+      "TargetPort": 1433,
+      "Protocol": "TCP"
+    },
+    {
+      "Name": "Remote Desktop",
+      "LocalPort": 3389,
+      "TargetPeerID": "ClientB",
+      "TargetPort": 3389,
+      "Protocol": "TCP"
+    }
+  ],
+  
+  "Logging": {
+    "Level": "INFO",
+    "LogToFile": true,
+    "LogFilePath": "logs/p2p_{date}.log"
+  },
+  
+  "Advanced": {
+    "HeartbeatInterval": 1000,
+    "PunchRetryCount": 10,
+    "EnableP2P": true,
+    "EnableRelay": true
+  }
+}
